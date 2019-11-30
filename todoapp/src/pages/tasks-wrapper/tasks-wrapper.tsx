@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     toolbox: {
       display: 'flex',
       padding: theme.spacing(2, 0, 2, 0)
-    },
-
-    addTaskBtn: {
-      marginLeft: 'auto'
     }
   })
 );
@@ -47,9 +43,12 @@ interface Props {
   label: string;
   isLoading?: boolean;
   onAddBtnClick(): void;
+  onEditTask(task: TaskEntity): void;
+  onRemoveTask(task: TaskEntity): void;
+  onSortEnd(indexes: { oldIndex: number; newIndex: number }): void;
 }
 
-const TasksWrapper = ({ tasks, label, isLoading, onAddBtnClick }: Props) => {
+const TasksWrapper = ({ tasks, label, isLoading, onAddBtnClick, onEditTask, onRemoveTask, onSortEnd }: Props) => {
   const classes = useStyles();
 
   if (isLoading) {
@@ -65,9 +64,9 @@ const TasksWrapper = ({ tasks, label, isLoading, onAddBtnClick }: Props) => {
   return (
     <Box className={classes.root}>
       <Typography variant='h5'>{label}</Typography>
-      <TasksList tasks={tasks} />
+      <TasksList tasks={tasks} onEditTask={onEditTask} onRemoveTask={onRemoveTask} onSortEnd={onSortEnd} />
       <Box className={classes.toolbox}>
-        <Fab size='small' color='primary' aria-label='add' className={classes.addTaskBtn} onClick={onAddBtnClick}>
+        <Fab size='small' color='primary' aria-label='add' onClick={onAddBtnClick}>
           <AddIcon />
         </Fab>
       </Box>

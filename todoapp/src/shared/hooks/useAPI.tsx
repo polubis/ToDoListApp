@@ -8,13 +8,17 @@ export type UseAPIConfig = {
 
 export const useAPI = <R extends any, P = any>(
   serviceAsyncMethod: (payload: P) => Observable<R>,
-  onSuccess: (response: R) => void = () => {},
+  onSuccess: (response: R, payload: P) => void = () => {},
   onFailure: (error: string) => void = () => {},
   configuration: UseAPIConfig = { responseDelay: 0 }
 ): [boolean, (payload?: P) => void] => {
   const [isPending, setIsPending] = useState(false);
 
-  const sending = useMemo(() => new Subject<P>(), []);
+  const sending = useMemo(
+    () => new Subject<P>(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const sending$ = useMemo(
     () =>
@@ -26,7 +30,7 @@ export const useAPI = <R extends any, P = any>(
           serviceAsyncMethod(payload).pipe(
             tap((response: R) => {
               setIsPending(false);
-              onSuccess(response);
+              onSuccess(response, payload);
             }),
             catchError((error: string) => {
               setIsPending(false);
@@ -36,6 +40,7 @@ export const useAPI = <R extends any, P = any>(
           )
         )
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -51,6 +56,7 @@ export const useAPI = <R extends any, P = any>(
     return () => {
       sub.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [isPending, callAPI];

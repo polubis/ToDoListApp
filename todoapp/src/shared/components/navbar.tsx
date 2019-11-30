@@ -15,10 +15,10 @@ import React, { useEffect } from 'react';
 
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import HideOnScroll from './hide-on-scroll';
+import ListIcon from '@material-ui/icons/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { Routes } from 'models/Routes';
 import SearchIcon from '@material-ui/icons/Search';
-import ShopIcon from '@material-ui/icons/ShoppingBasket';
 import ThemeIcon from '@material-ui/icons/Palette';
 import { useHistory } from 'react-router';
 
@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
 
           <Tabs aria-label='simple tabs example' value={activeTab === -1 ? 0 : activeTab} onChange={handleChangeActiveTab}>
             <Tab label='Dashboard' disableRipple className={classes.tab} icon={<DashboardIcon />} />
-            <Tab label='Tasks' disableRipple className={classes.tab} icon={<ShopIcon />} />
+            <Tab label='Tasks' disableRipple className={classes.tab} icon={<ListIcon />} />
           </Tabs>
 
           <IconButton className={classes.themeBtn}>
