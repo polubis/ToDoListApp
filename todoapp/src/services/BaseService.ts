@@ -1,13 +1,7 @@
-import { Observable, from } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+import { delay } from 'rxjs/operators';
 
 export default class BaseService {
-  protected simulate<T>(data: T): Observable<T> {
-    const promise = new Promise<T>((resolve, reject) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
-
-    return from(promise);
-  }
+  protected simulate = <T>(data: any): Observable<T> => of(data).pipe(delay(1500));
 }

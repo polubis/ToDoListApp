@@ -1,42 +1,56 @@
-import { Box, Grid, Theme, Typography, createStyles, makeStyles } from '@material-ui/core';
-import { CallState, useApiCall } from 'shared/hooks/useApiCall';
+import { Box, Theme, createStyles, makeStyles } from '@material-ui/core';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import React from 'react';
+import { FormModal } from 'models/ui';
 import { TaskEntity } from 'models/entities';
-import TasksList from 'shared/components/tasks-list';
+import { TaskFormData } from 'models/form-data';
+import TaskFormModal from './task-form-modal/task-form-modal';
 import TasksService from 'services/TasksService';
+import TasksWrapper from './tasks-wrapper/tasks-wrapper';
+import { useAPI } from 'shared/hooks/useAPI';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr',
+      gridGap: theme.spacing(4),
       padding: theme.spacing(2, 3)
     }
   })
 );
 
-const TasksPage: React.FC = () => {
+const TasksPage = () => {
   const classes = useStyles();
 
-  const { isLoading, data: tasks } = useApiCall<TaskEntity[]>(TasksService.GET.tasks(), new CallState([], true));
+  const [taskFormModalData, setTaskFormModalData] = useState<FormModal<TaskFormData>>({});
+  const [tasks, setTasks] = useState<TaskEntity[]>([]);
+
+  const [isLoadingTasks, getTasks] = useAPI<TaskEntity[]>(TasksService.GET.tasks, setTasks);
+
+  const openTaskFormModal = useCallback(() => {
+    setTaskFormModalData({ isOpen: true });
+  }, []);
+
+  const closeTaskFormModal = useCallback(() => {
+    setTaskFormModalData({});
+  }, []);
+
+  useEffect(() => {
+    getTasks();
+  }, []);
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs={12}>
-        <Typography variant='h5'>Your tasks</Typography>
-        <TasksList tasks={tasks} />
-      </Grid>
+    <>
+      <Box className={classes.root}>
+        <TasksWrapper tasks={tasks} isLoading={isLoadingTasks} label='Week 1' onAddBtnClick={openTaskFormModal} />
+        <TasksWrapper tasks={tasks} isLoading={isLoadingTasks} label='Week 2' onAddBtnClick={openTaskFormModal} />
+        <TasksWrapper tasks={tasks} isLoading={isLoadingTasks} label='Week 3' onAddBtnClick={openTaskFormModal} />
+        <TasksWrapper tasks={tasks} isLoading={isLoadingTasks} label='Week 4' onAddBtnClick={openTaskFormModal} />
+      </Box>
 
-      <Grid item xs={12}>
-        <Typography variant='h5'>Your tasks</Typography>
-        <TasksList tasks={tasks} />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography variant='h5'>Your tasks</Typography>
-        <TasksList tasks={tasks} />
-      </Grid>
-    </Grid>
+      {taskFormModalData.isOpen && <TaskFormModal onClose={closeTaskFormModal} />}
+    </>
   );
 };
 
