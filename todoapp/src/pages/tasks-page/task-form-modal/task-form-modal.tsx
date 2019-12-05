@@ -13,16 +13,14 @@ import {
   createStyles,
   makeStyles
 } from '@material-ui/core';
-import { FormModalOperations, FormModalSuccessResponsePayload } from 'models/ui';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import ColorPicker from 'shared/components/color-picker';
 import ModalLoader from 'shared/components/modal-loader';
 import { TaskEntity } from 'models/entities';
 import { TaskFormData } from 'models/form-data';
-import TasksService from 'services/TasksService';
+import { TasksContext } from 'providers/TasksProvider';
 import { Validator as V } from 'shared/utils/validator';
-import { useAPI } from 'shared/hooks/useAPI';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,49 +37,38 @@ const validationRules = {
         .required()
         .onlyText()
         .min(3)
-        .max(20)
+        .max(50)
     ),
   description: (value: string) => V.one(new V(value).min(10).max(250)),
   theme: () => ''
 };
 
 interface Props {
-  initState?: { data: TaskFormData; id: number } | null;
-  onClose: () => void;
-  onSuccessResponse: (payload: FormModalSuccessResponsePayload<TaskEntity>) => void;
+  taskToEdit: TaskEntity | null;
+  onClose(): void;
 }
 
-const TaskFormModal = ({ initState, onClose, onSuccessResponse }: Props) => {
+const TaskFormModal = ({ taskToEdit, onClose }: Props) => {
   const classes = useStyles();
 
-  const [isSavingTask, saveTask] = useAPI<TaskEntity, TaskFormData>(TasksService.POST.task, task => {
-    onSuccessResponse({ data: task, operation: FormModalOperations.ADD });
-    handleClose();
-  });
-
-  const [isEditingTask, editTask] = useAPI<TaskEntity, TaskFormData>(TasksService.PUT.task, task => {
-    onSuccessResponse({ data: task, operation: FormModalOperations.EDIT });
-    handleClose();
-  });
-
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<TaskFormData>(
-    initState
-      ? initState.data
-      : {
-          name: '',
-          description: '',
-          theme: {
-            color: '#000000',
-            background: '#ffffff'
-          }
-        }
+    taskToEdit || {
+      name: '',
+      description: '',
+      theme: {
+        color: '#000000',
+        background: '#ffffff'
+      }
+    }
   );
-
   const [errors, setErrors] = useState({
     name: '',
     description: '',
     theme: ''
   });
+
+  const { addTask, editTask } = useContext(TasksContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const key = e.target.name as keyof TaskFormData;
@@ -121,31 +108,27 @@ const TaskFormModal = ({ initState, onClose, onSuccessResponse }: Props) => {
       return;
     }
 
-    if (initState) {
-      editTask(formData);
-    } else {
-      saveTask(formData);
-    }
+    setIsSaving(true);
+
+    const operation = taskToEdit ? editTask(formData, taskToEdit.id) : addTask(formData);
+    operation.subscribe(onClose, () => setIsSaving(false));
   };
 
   const handleClose = () => {
-    if (isSavingTask || isEditingTask) {
+    if (isSaving) {
       return;
     }
 
     onClose();
   };
 
-  console.log(`Form in ${initState ? 'edit' : 'add'} mode`);
-  console.log(`Current form data: ${initState}`);
-
   return (
     <Dialog onClose={handleClose} open data-testid='dialog'>
-      {(isSavingTask || isEditingTask) && <ModalLoader />}
+      {isSaving && <ModalLoader />}
 
-      <DialogTitle>{initState ? `You are editing task ${initState.data.name}` : 'Create new task'}</DialogTitle>
+      <DialogTitle>{taskToEdit ? `You are editing task ${taskToEdit.name}` : 'Create new task'}</DialogTitle>
       <DialogContent>
-        <DialogContentText>Populate required fields and {initState ? 'edit' : 'create'} your task.</DialogContentText>
+        <DialogContentText>Populate required fields and {taskToEdit ? 'edit' : 'create'} your task.</DialogContentText>
 
         <FormControl fullWidth margin='dense'>
           <TextField
@@ -154,6 +137,7 @@ const TaskFormModal = ({ initState, onClose, onSuccessResponse }: Props) => {
             name='name'
             variant='outlined'
             autoComplete='off'
+            autoFocus
             value={formData.name}
             onChange={handleChange}
           />
@@ -204,7 +188,7 @@ const TaskFormModal = ({ initState, onClose, onSuccessResponse }: Props) => {
         <Button color='primary' onClick={handleClose}>
           Cancel
         </Button>
-        <Button color='primary' onClick={handleSubmit} disabled={isFormInvalid(errors)}>
+        <Button color='primary' onClick={handleSubmit} disabled={isFormInvalid(errors) || isSaving}>
           Submit
         </Button>
       </DialogActions>

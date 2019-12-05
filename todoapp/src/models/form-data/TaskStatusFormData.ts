@@ -1,7 +1,6 @@
 import { ThemeEntity } from 'models/entities';
 
-export interface TaskFormData {
+export interface TaskStatusFormData {
   name: string;
-  description: string;
   theme: ThemeEntity;
 }

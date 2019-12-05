@@ -4,7 +4,7 @@ import React, { ReactElement } from 'react';
 
 import Navbar from './shared/components/navbar';
 import { Routes } from './models/Routes';
-import TasksPage from './pages/TasksPage';
+import TasksPage from './pages/tasks-page/TasksPage';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -16,7 +16,9 @@ class TasksService extends BaseService {
   };
 
   PUT = {
-    task: (formData: TaskFormData) => this.simulate<TaskEntity>({ ...formData })
+    task: (formData: TaskFormData) => this.simulate<TaskEntity>({ ...formData }),
+    taskOrder: (oldIndex: number, newIndex: number) => this.simulate<TaskEntity[]>([]),
+    taskStatus: (taskId: number, taskStatusId: number) => this.simulate<null>(null)
   };
 
   DELETE = {
