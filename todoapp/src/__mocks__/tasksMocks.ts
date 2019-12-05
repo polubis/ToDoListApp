@@ -2,10 +2,32 @@ import { TaskEntity, TaskStatusEntity } from 'models/entities';
 
 export const TasksMock: TaskEntity[] = [
   {
+    id: 10,
+    creationDate: '19/12/2018 13:35',
+    name: 'Wynieść śmieci',
+    description: 'Są w śmietniku',
+    theme: {
+      color: '#000000',
+      background: '#ffffff'
+    },
+    statusId: 0
+  },
+  {
+    id: 101,
+    creationDate: '19/12/2018 13:35',
+    name: 'Znaleźć fajne memy na prezentacje',
+    description: '',
+    theme: {
+      color: '#000000',
+      background: '#ffffff'
+    },
+    statusId: 0
+  },
+  {
     id: 0,
     creationDate: '19/12/2018 13:35',
-    name: 'Learn Angular JS',
-    description: 'I should learn Angular JS because of curiosity',
+    name: 'Poszukać ofert na programiste HTML',
+    description: '',
     theme: {
       color: '#000000',
       background: '#ffffff'
@@ -15,8 +37,8 @@ export const TasksMock: TaskEntity[] = [
   {
     id: 1,
     creationDate: '19/12/2018 13:35',
-    name: 'Learn HTML 5',
-    description: 'I should learn Angular JS because of curiosity',
+    name: 'Zmienić formatowanie tabami na spacje',
+    description: '',
     theme: {
       color: '#000000',
       background: '#ffffff'
@@ -26,34 +48,13 @@ export const TasksMock: TaskEntity[] = [
   {
     id: 2,
     creationDate: '19/12/2018 13:35',
-    name: 'Learn CSS',
-    description: 'I should learn Angular JS because of curiosity',
+    name: 'Nauczyć się Python from Udemy',
+    description: '',
     theme: {
       color: '#000000',
       background: '#ffffff'
     },
     statusId: 0
-  },
-  {
-    id: 3,
-    creationDate: '19/12/2018 13:35',
-    name: 'Learn React JS',
-    description: 'I should learn Angular JS because of curiosity',
-    theme: {
-      color: '#000000',
-      background: '#ffffff'
-    }
-  },
-  {
-    id: 4,
-    creationDate: '19/12/2018 13:35',
-    name: 'Learn JS',
-    description: 'I should learn Angular JS because of curiosity',
-    theme: {
-      color: '#000000',
-      background: '#ffffff'
-    },
-    statusId: 1
   }
 ];
 
