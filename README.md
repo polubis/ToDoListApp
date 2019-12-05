@@ -1,6 +1,6 @@
 # Recruitment task
 
-WORK TIME: 8h only, Friday (2h), Saturday (4h), Sunday (2h)
+WORK TIME: 15h
 
 ## How to run?
 
@@ -219,8 +219,3 @@ We can use Redux and Redux persist library but this is a simple app. The best op
 ## Deploy
 
 Deployment script (npm run build). 
-
-## What is missing
-
-I don't have time to add RWD to project because of some home duties. 
-I hope that it will be taken into account that the whole task was done 8h. I i will have more time i will prepare dedicated designs for this app in Adobe XD program and implement RWD with Material Design breakpoint rules. 
